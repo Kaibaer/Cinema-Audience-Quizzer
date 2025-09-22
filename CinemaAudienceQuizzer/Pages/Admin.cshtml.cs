@@ -15,7 +15,7 @@ public class AdminModel : PageModel
     public IFormFile PosterFile { get; set; }
 
     [BindProperty]
-    public int ActualRuntime { get; set; }
+    public int? ActualRuntime { get; set; }
 
     public QuizState QuizState => _quizState;
 
@@ -47,29 +47,33 @@ public class AdminModel : PageModel
                 }
 
                 _quizState.PosterUrl = "/uploads/" + fileName;
-                _quizState.RuntimeRevealed = false; // Hide runtime until revealed
-                _quizState.Guesses.Clear();
                 await _hubContext.Clients.All.SendAsync("ReceivePoster", _quizState.PosterUrl);
             }
 
-
-
-            // Set the actual runtime
-            _quizState.ActualRuntime = ActualRuntime;
-
-            // Reset guesses for a new game
+            // Always reset game state for a new game, regardless of poster upload
+            _quizState.RuntimeRevealed = false;
+            _quizState.GameSessionId = Guid.NewGuid();
+            _quizState.ActualRuntime = null;
+            _quizState.PendingRuntime = ActualRuntime; // Store the value entered in the setup form
             _quizState.Guesses.Clear();
         }
         else if (action == "reveal")
         {
-            _quizState.RuntimeRevealed = true; // <-- This is crucial!
+            if (_quizState.PendingRuntime == null)
+            {
+                ModelState.AddModelError("", "Bitte geben Sie die tatsächliche Laufzeit ein.");
+                return Page();
+            }
 
-            // Only reveal, do not change poster or runtime
+            _quizState.ActualRuntime = _quizState.PendingRuntime.Value;
+            _quizState.RuntimeRevealed = true;
+
             foreach (var g in _quizState.Guesses)
-                g.Difference = Math.Abs(g.RuntimeGuess - _quizState.ActualRuntime.GetValueOrDefault());
+                g.Difference = Math.Abs(g.RuntimeGuess - _quizState.ActualRuntime.Value);
 
             await _hubContext.Clients.All.SendAsync("RevealRuntime", _quizState.ActualRuntime);
             await _hubContext.Clients.All.SendAsync("UpdateGuesses", _quizState.Guesses);
+            _quizState.PendingRuntime = null;
         }
 
         return RedirectToPage();

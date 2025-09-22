@@ -3,8 +3,11 @@
 @inject QuizState QuizState
 
 @{
-    ViewData["Title"] = "Play the Quiz";
-    var hasGuessed = QuizState.Guesses.Any(g => g.SeatNumber == Model.Guess.SeatNumber);
+    ViewData["Title"] = "Thega Sneak Quiz";
+    var seatNumber = Model.CurrentSeatNumber;
+    var hasGuessed = QuizState.Guesses
+    .Any(g => g.SeatNumber == Model.Guess.SeatNumber && g.GameSessionId == QuizState.GameSessionId);
+
 }
 
 <div class="min-vh-100 d-flex align-items-center justify-content-center">
@@ -17,6 +20,16 @@
                 <img src="@QuizState.PosterUrl" alt="Movie Poster" class="img-fluid mb-3" style="max-height:750px;" />
                 @if (!QuizState.RuntimeRevealed)
                 {
+                    @* Show server-side errors here *@
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <div>@error.ErrorMessage</div>
+                            }
+                        </div>
+                    }
                     <form method="post" class="needs-validation" novalidate>
                         <!-- Guess form as before -->
                         <div class="mb-3">
@@ -51,7 +64,7 @@
                             <tr>
                                 <th>Sitz</th>
                                 <th>Schätzung</th>
-                                <th>Δ</th>
+                                <th>Abweichung</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -99,7 +112,7 @@
             .build();
 
         connection.on("ReceivePoster", function (imageUrl) {
-            document.querySelector("img[alt='Movie Poster']").src = imageUrl;
+            location.reload();
         });
 
         connection.on("RevealRuntime", function (actualRuntime) {
