@@ -1,0 +1,115 @@
+﻿@page
+@model PlayerModel
+@inject QuizState QuizState
+
+@{
+    ViewData["Title"] = "Play the Quiz";
+    var hasGuessed = QuizState.Guesses.Any(g => g.SeatNumber == Model.Guess.SeatNumber);
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Movie Quiz</h3>
+            </div>
+            <div class="card-body text-center">
+                <img src="@QuizState.PosterUrl" alt="Movie Poster" class="img-fluid mb-3" style="max-height:350px;" />
+                @if (!QuizState.RuntimeRevealed)
+                {
+                    <form method="post" class="needs-validation" novalidate>
+                        <!-- Guess form as before -->
+                        <div class="mb-3">
+                            <label asp-for="Guess.RuntimeGuess" class="form-label">Your guess for the runtime (minutes):</label>
+                            <input asp-for="Guess.RuntimeGuess" class="form-control" type="number" min="1" required />
+                            <span asp-validation-for="Guess.RuntimeGuess" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Guess.SeatNumber" class="form-label">Your seat number:</label>
+                            <input asp-for="Guess.SeatNumber" class="form-control" required />
+                            <span asp-validation-for="Guess.SeatNumber" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-success" @(hasGuessed ? "disabled" : "")>
+                            Submit Guess
+                        </button>
+                        @if (hasGuessed)
+                        {
+                            <div class="alert alert-info mt-3">
+                                You have already submitted your guess. Waiting for the result...
+                            </div>
+                        }
+                    </form>
+                }
+                else
+                {
+                    <h4 class="mt-4">Leaderboard</h4>
+                    <div class="alert alert-primary mb-4" id="actual-runtime-container">
+                        <strong>Actual Runtime:</strong> <span id="actual-runtime">@QuizState.ActualRuntime</span> minutes
+                    </div>
+                    <table class="table table-striped table-hover mt-3">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Seat</th>
+                                <th>Guess</th>
+                                <th>Difference</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int? actual = QuizState.ActualRuntime;
+                                var guessesWithDelta = QuizState.Guesses
+                                .Select(g => new
+                                {
+                                    Guess = g,
+                                    Delta = actual.HasValue ? Math.Abs(g.RuntimeGuess - actual.Value) : (int?)null
+                                })
+                                .OrderBy(x => x.Delta)
+                                .ToList();
+                                var minDelta = guessesWithDelta.Min(x => x.Delta);
+                                var closest = guessesWithDelta.Where(x => x.Delta == minDelta).ToList();
+                            }
+                            @foreach (var entry in guessesWithDelta)
+                            {
+                                <tr class="@(closest.Contains(entry) ? "table-success" : "")">
+                                    <td>@entry.Guess.SeatNumber</td>
+                                    <td>@entry.Guess.RuntimeGuess</td>
+                                    <td>@entry.Delta</td>
+                                    <td>
+                                        @if (closest.Contains(entry))
+                                        {
+                                            <span class="badge bg-success">Closest!</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/quizhub")
+            .build();
+
+        connection.on("ReceivePoster", function (imageUrl) {
+            document.querySelector("img[alt='Movie Poster']").src = imageUrl;
+        });
+
+        connection.on("RevealRuntime", function (actualRuntime) {
+            location.reload();
+        });
+
+        connection.on("UpdateGuesses", function (guesses) {
+            location.reload();
+        });
+
+        connection.start();
+    </script>
+}

@@ -1,0 +1,38 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+    background-color: #181818;
+    color: #f1f1f1;
+}
+
+a, .btn-link {
+    color: #90caf9;
+}
+
+.card, .main, .content, .container {
+    background-color: #232323;
+    color: #f1f1f1;
+    border-color: #333;
+}
+
+input, select, textarea, button {
+    background-color: #232323;
+    color: #f1f1f1;
+    border: 1px solid #444;
+}
