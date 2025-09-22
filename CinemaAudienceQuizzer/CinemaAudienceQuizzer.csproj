@@ -10,6 +10,7 @@
     <Folder Include="Hubs\" />
     <Folder Include="Models\" />
     <Folder Include="Services\" />
+    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
   <ItemGroup>
