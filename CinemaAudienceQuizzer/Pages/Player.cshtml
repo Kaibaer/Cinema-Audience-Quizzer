@@ -7,11 +7,11 @@
     var hasGuessed = QuizState.Guesses.Any(g => g.SeatNumber == Model.Guess.SeatNumber);
 }
 
-<div class="row justify-content-center">
+<div class="min-vh-100 d-flex align-items-center justify-content-center">
     <div class="col-md-8">
         <div class="card shadow mb-4">
-            <div class="card-header bg-primary text-white">
-                <h3 class="mb-0">Movie Quiz</h3>
+            <div class="card-header gradient-header">
+                <h3 class="mb-0">Thega Sneak Quiz</h3>
             </div>
             <div class="card-body text-center">
                 <img src="@QuizState.PosterUrl" alt="Movie Poster" class="img-fluid mb-3" style="max-height:350px;" />
@@ -29,12 +29,11 @@
                             <input asp-for="Guess.SeatNumber" class="form-control" required />
                             <span asp-validation-for="Guess.SeatNumber" class="text-danger"></span>
                         </div>
-                        <button type="submit" class="btn btn-success" @(hasGuessed ? "disabled" : "")>
+                        <button type="submit" class="btn gradient-btn" @(hasGuessed ? "disabled" : "")>
                             Submit Guess
                         </button>
                         @if (hasGuessed)
                         {
-
                             <div class="alert alert-info mt-3">
                                 You have already submitted your guess. Waiting for the result...
                             </div>
