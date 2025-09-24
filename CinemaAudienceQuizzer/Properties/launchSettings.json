@@ -37,7 +37,7 @@
     "CinemaAudienceQuizzer": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "applicationUrl": "https://192.168.178.62:5001;http://192.168.178.62:5000",
+      "applicationUrl": "http://192.168.178.62:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
