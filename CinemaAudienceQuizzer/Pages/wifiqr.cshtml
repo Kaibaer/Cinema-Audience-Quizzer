@@ -1,0 +1,30 @@
+﻿@page "/wifiqr"
+
+<div class="d-flex flex-column align-items-center justify-content-center min-vh-100">
+    <h2>WiFi QR Code</h2>
+    <br />
+    <br />
+    <br />
+    <br />
+    <img src="images/wifiqr/wifi.png" alt="WiFi QR Code" style="max-width:300px;" />
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <p class="mt-3">Scan to connect to WiFi</p>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/quizhub")
+            .build();
+
+        connection.on("SwitchPage", function (page) {
+            window.location.href = page;
+        });
+        connection.start();
+    </script>
+}

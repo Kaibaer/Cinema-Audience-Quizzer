@@ -11,4 +11,9 @@ public class QuizHub : Hub
 
     public async Task BroadcastGuesses(List<Guess> guesses)
         => await Clients.All.SendAsync("UpdateGuesses", guesses);
+
+    public async Task SwitchPage(string page)
+    {
+        await Clients.All.SendAsync("SwitchPage", page);
+    }
 }

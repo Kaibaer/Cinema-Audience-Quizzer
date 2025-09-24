@@ -17,4 +17,9 @@
     <None Include="wwwroot\images\default-poster.jpg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="QRCoder" Version="1.6.0" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.9" />
+  </ItemGroup>
+
 </Project>

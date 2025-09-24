@@ -24,3 +24,27 @@
         <img src="@QuizState.PosterUrl" alt="Current Poster" style="max-width:300px;" />
     </div>
 }
+
+<div class="mt-4">
+    <h4>Client Page Control</h4>
+    <button id="switch-player" class="btn btn-secondary me-2" type="button">Switch All to Player</button>
+    <button id="switch-wifiqr" class="btn btn-info" type="button">Switch All to WiFi QR</button>
+</div>
+
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/quizhub")
+            .build();
+
+        connection.start();
+
+        document.getElementById("switch-player").onclick = function () {
+            connection.invoke("SwitchPage", "/Player");
+        };
+        document.getElementById("switch-wifiqr").onclick = function () {
+            connection.invoke("SwitchPage", "/wifiqr");
+        };
+    </script>
+}

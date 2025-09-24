@@ -122,7 +122,9 @@
         connection.on("UpdateGuesses", function (guesses) {
             location.reload();
         });
-
+        connection.on("SwitchPage", function (page) {
+            window.location.href = page;
+        });
         connection.start();
     </script>
 }
