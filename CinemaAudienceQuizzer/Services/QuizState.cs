@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Net.Sockets;
 using System.Net;
+using System.Net.NetworkInformation;
 
 public class QuizState
 {
@@ -39,11 +40,18 @@ public class QuizState
 
     public string GetLocalIPv4()
     {
-        foreach (var ip in Dns.GetHostEntry(Dns.GetHostName()).AddressList)
+        foreach (var ni in NetworkInterface.GetAllNetworkInterfaces())
         {
-            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            if (ni.OperationalStatus == OperationalStatus.Up &&
+                ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
             {
-                return ip.ToString();
+                foreach (var ip in ni.GetIPProperties().UnicastAddresses)
+                {
+                    if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        return ip.Address.ToString();
+                    }
+                }
             }
         }
         return "127.0.0.1";

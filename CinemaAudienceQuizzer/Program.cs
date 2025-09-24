@@ -26,6 +26,6 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 var quizState = app.Services.GetRequiredService<QuizState>();
-quizState.SaveQrCodeImage(quizState.GetLocalIPv4()+":5000", "wwwroot/images/default-poster.png");
+quizState.SaveQrCodeImage("http://"+quizState.GetLocalIPv4()+":5000", "wwwroot/images/default-poster.png");
 
 app.Run();
