@@ -6,6 +6,18 @@ builder.Services.AddSingleton<QuizState>();
 
 builder.Services.AddSignalR();
 
+builder.Services.AddAuthentication("Cookies")
+    .AddCookie("Cookies", options =>
+    {
+        options.LoginPath = "/login";
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+});
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 app.MapHub<QuizHub>("/quizhub");
 // Configure the HTTP request pipeline.

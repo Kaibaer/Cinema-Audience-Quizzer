@@ -1,0 +1,25 @@
+﻿@page
+@model CinemaAudienceQuizzer.Pages.LoginModel
+
+@{
+    ViewData["Title"] = "Admin Login";
+}
+
+<h3>Admin Login</h3>
+
+<form method="post">
+    <div class="mb-3">
+        <label for="Username" class="form-label">Username</label>
+        <input asp-for="Input.Username" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label for="Password" class="form-label">Password</label>
+        <input asp-for="Input.Password" type="password" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger mt-2">@Model.ErrorMessage</div>
+}
