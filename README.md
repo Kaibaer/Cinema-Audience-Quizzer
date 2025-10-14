@@ -20,7 +20,7 @@ CinemaAudienceQuizzer is a Blazor-based web application that allows cinema audie
 
 ## Open TODOs
 
-- [ ] Add authentication or unique user identification to prevent duplicate guesses from the same seat.
+- [x] Add authentication or unique user identification to prevent duplicate guesses from the same seat.
 - [ ] Implement admin controls for starting/stopping the quiz and revealing the runtime.
 - [ ] Add support for multiple rounds or movies in a single session.
 - [ ] Enhance error handling and user feedback for invalid or duplicate submissions.
@@ -32,3 +32,4 @@ CinemaAudienceQuizzer is a Blazor-based web application that allows cinema audie
 ---
 
 Feel free to contribute or suggest improvements!
+
